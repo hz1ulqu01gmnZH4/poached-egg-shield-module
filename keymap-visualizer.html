@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poached Eggs Keymap</title>
+<style>
+  :root {
+    --bg: #1a1a2e;
+    --card: #16213e;
+    --key-bg: #0f3460;
+    --key-border: #533483;
+    --key-text: #e2e2e2;
+    --accent: #e94560;
+    --mod-bg: #1a5276;
+    --layer-bg: #6c3483;
+    --fn-bg: #1e8449;
+    --sym-bg: #7d6608;
+    --none-bg: #2c2c3a;
+    --trans-bg: #3d3d50;
+    --bt-bg: #2471a3;
+    --special-bg: #a93226;
+    --tab-active: #e94560;
+    --tab-inactive: #16213e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--key-text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 24px;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+  }
+
+  .tab {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    background: var(--tab-inactive);
+    color: #aaa;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+
+  .tab:hover { background: #1f2b47; color: #ddd; }
+
+  .tab.active {
+    background: var(--tab-active);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .keyboard {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 24px 28px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .row {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .split-gap { width: 40px; flex-shrink: 0; }
+
+  .key {
+    width: 62px;
+    height: 52px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.2;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative;
+    padding: 4px;
+    word-break: break-word;
+  }
+
+  .key:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  }
+
+  .key.alpha    { background: var(--key-bg); }
+  .key.mod      { background: var(--mod-bg); }
+  .key.layer    { background: var(--layer-bg); }
+  .key.fn       { background: var(--fn-bg); }
+  .key.sym      { background: var(--sym-bg); }
+  .key.none     { background: var(--none-bg); opacity: 0.3; }
+  .key.trans    { background: var(--trans-bg); border-style: dashed; }
+  .key.nav      { background: #2e86c1; }
+  .key.bt       { background: var(--bt-bg); }
+  .key.special  { background: var(--special-bg); }
+  .key.num      { background: #1a6e4e; }
+  .key.space    { background: #4a235a; }
+
+  .combos {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-top: 20px;
+    max-width: 700px;
+    width: 100%;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+
+  .combos h3 {
+    font-size: 0.9rem;
+    color: var(--accent);
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+
+  .combo-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+
+  .combo-label {
+    color: #aaa;
+    min-width: 120px;
+    flex-shrink: 0;
+  }
+
+  .combo-keys {
+    color: #ddd;
+  }
+
+  .combo-keys kbd {
+    background: #2a2a40;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: inherit;
+    font-size: 0.75rem;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+    justify-content: center;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: #aaa;
+  }
+
+  .legend-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+  }
+
+  .layer-desc {
+    text-align: center;
+    color: #888;
+    font-size: 0.8rem;
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<h1>POACHED EGGS</h1>
+<p class="subtitle">ZMK Split Keyboard &mdash; HHKB-inspired &mdash; 4 Layers</p>
+
+<div class="tabs" id="tabs">
+  <button class="tab active" onclick="showLayer(0)">Layer 0: Default</button>
+  <button class="tab" onclick="showLayer(1)">Layer 1: Lower</button>
+  <button class="tab" onclick="showLayer(2)">Layer 2: Raise</button>
+  <button class="tab" onclick="showLayer(3)">Layer 3: BT</button>
+</div>
+
+<div id="layers"></div>
+
+<div class="combos">
+  <h3>Key Combinations Reference</h3>
+  <div class="combo-item">
+    <span class="combo-label">tmux prefix</span>
+    <span class="combo-keys"><kbd>LCtrl</kbd> (L pinky) + <kbd>A</kbd> (L ring) &rarr; release &rarr; next key</span>
+  </div>
+  <div class="combo-item">
+    <span class="combo-label">Win Terminal paste</span>
+    <span class="combo-keys"><kbd>LShift</kbd> (L pinky) + <kbd>Fn</kbd> (R pinky) + <kbd>Ins</kbd> (R index, Y pos)</span>
+  </div>
+  <div class="combo-item">
+    <span class="combo-label">PowerToys</span>
+    <span class="combo-keys"><kbd>LGui</kbd> (L thumb) + <kbd>LShift</kbd> (L pinky) + key (R hand)</span>
+  </div>
+  <div class="combo-item">
+    <span class="combo-label">Vim arrows</span>
+    <span class="combo-keys">Hold <kbd>Fn</kbd> (R pinky) &rarr; <kbd>H</kbd>=Left <kbd>J</kbd>=Down <kbd>K</kbd>=Up <kbd>L</kbd>=Right</span>
+  </div>
+  <div class="combo-item">
+    <span class="combo-label">Ctrl+Shift+Arrow</span>
+    <span class="combo-keys"><kbd>LShift</kbd> (L pinky) + <kbd>LCtrl</kbd> (L ring, raise row 2) + <kbd>Fn</kbd> (R pinky) + <kbd>HJKL</kbd></span>
+  </div>
+  <div class="combo-item">
+    <span class="combo-label">BT layer</span>
+    <span class="combo-keys">Hold <kbd>MO(1)</kbd> + tap <kbd>MO(3)</kbd> (R thumb) &mdash; or &mdash; Hold <kbd>Fn</kbd> + tap <kbd>MO(3)</kbd> (L thumb)</span>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--key-bg)"></div>Alpha</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--mod-bg)"></div>Modifier</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#1a6e4e"></div>Number</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--sym-bg)"></div>Symbol</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--fn-bg)"></div>Function</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--layer-bg)"></div>Layer</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#2e86c1"></div>Navigation</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--bt-bg)"></div>Bluetooth</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--special-bg)"></div>Special</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#4a235a"></div>Space/Enter</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--trans-bg);border:1px dashed rgba(255,255,255,0.3)"></div>Transparent</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--none-bg);opacity:0.3"></div>None</div>
+</div>
+
+<script>
+const layers = [
+  {
+    name: "Default (QWERTY - HHKB)",
+    desc: "HHKB-style: Ctrl on home row, Bksp at top-right, Fn at R pinky, RShift on thumb",
+    rows: [
+      { left: ["Tab","Q","W","E","R","T"], right: ["Y","U","I","O","P","Bksp"] },
+      { left: ["LCtrl","A","S","D","F","G"], right: ["H","J","K","L","; :","' \""] },
+      { left: ["LShift","Z","X","C","V","B"], right: ["N","M",", <",". >","/ ?","Fn(2)"] },
+      { left: ["","","Esc","LGui","LAlt","MO(1)","Space"], right: ["Enter","RShift","RAlt","RGui","Del","",""] },
+    ],
+    types: [
+      { left: ["mod","alpha","alpha","alpha","alpha","alpha"], right: ["alpha","alpha","alpha","alpha","alpha","mod"] },
+      { left: ["mod","alpha","alpha","alpha","alpha","alpha"], right: ["alpha","alpha","alpha","alpha","sym","sym"] },
+      { left: ["mod","alpha","alpha","alpha","alpha","alpha"], right: ["alpha","alpha","sym","sym","sym","layer"] },
+      { left: ["none","none","mod","mod","mod","layer","space"], right: ["space","mod","mod","mod","mod","none","none"] },
+    ]
+  },
+  {
+    name: "Lower (Numbers & Symbols)",
+    desc: "Grave + numbers, tilde + shifted symbols, operators & brackets",
+    rows: [
+      { left: ["`","1","2","3","4","5"], right: ["6","7","8","9","0","\u25BD"] },
+      { left: ["~","!","@","#","$","%"], right: ["^","&","*","(",")","="] },
+      { left: ["\u25BD","|","\\","-","+",""], right: ["[","]","{","}","_","RShift"] },
+      { left: ["","","\u25BD","\u25BD","\u25BD","\u25BD","\u25BD"], right: ["\u25BD","MO(3)","\u25BD","\u25BD","\u25BD","",""] },
+    ],
+    types: [
+      { left: ["sym","num","num","num","num","num"], right: ["num","num","num","num","num","trans"] },
+      { left: ["sym","sym","sym","sym","sym","sym"], right: ["sym","sym","sym","sym","sym","sym"] },
+      { left: ["trans","sym","sym","sym","sym","none"], right: ["sym","sym","sym","sym","sym","mod"] },
+      { left: ["none","none","trans","trans","trans","trans","trans"], right: ["trans","layer","trans","trans","trans","none","none"] },
+    ]
+  },
+  {
+    name: "Raise (Nav & F-keys)",
+    desc: "F1-F12 aligned left, HJKL arrows + nav right, mods on row 2 for combos",
+    rows: [
+      { left: ["F1","F2","F3","F4","F5","F6"], right: ["Ins","Home","PgUp","PgDn","End","Del"] },
+      { left: ["F7","F8","F9","F10","F11","F12"], right: ["\u2190","\u2193","\u2191","\u2192","PrtSc","Caps"] },
+      { left: ["\u25BD","LCtrl","LAlt","LGui","",""], right: ["","","","","","\u25BD"] },
+      { left: ["","","\u25BD","\u25BD","\u25BD","MO(3)","\u25BD"], right: ["\u25BD","\u25BD","\u25BD","\u25BD","\u25BD","",""] },
+    ],
+    types: [
+      { left: ["fn","fn","fn","fn","fn","fn"], right: ["special","nav","nav","nav","nav","mod"] },
+      { left: ["fn","fn","fn","fn","fn","fn"], right: ["nav","nav","nav","nav","mod","mod"] },
+      { left: ["trans","mod","mod","mod","none","none"], right: ["none","none","none","none","none","trans"] },
+      { left: ["none","none","trans","trans","trans","layer","trans"], right: ["trans","trans","trans","trans","trans","none","none"] },
+    ]
+  },
+  {
+    name: "BT (Bluetooth)",
+    desc: "Bluetooth profile selection, clear, and studio unlock",
+    rows: [
+      { left: ["BT CLR","BT 0","BT 1","BT 2","BT 3","BT 4"], right: ["","","","","",""] },
+      { left: ["Studio\nUnlock","","","","",""], right: ["","","","","",""] },
+      { left: ["","","","","",""], right: ["","","","","",""] },
+      { left: ["O","M","U","","","",""], right: ["","","","","K","E","N"] },
+    ],
+    types: [
+      { left: ["special","bt","bt","bt","bt","bt"], right: ["none","none","none","none","none","none"] },
+      { left: ["special","none","none","none","none","none"], right: ["none","none","none","none","none","none"] },
+      { left: ["none","none","none","none","none","none"], right: ["none","none","none","none","none","none"] },
+      { left: ["alpha","alpha","alpha","none","none","none","none"], right: ["none","none","none","none","alpha","alpha","alpha"] },
+    ]
+  }
+];
+
+function createKeyboard(layer, index) {
+  const wrapper = document.createElement('div');
+  wrapper.id = 'layer-' + index;
+  wrapper.style.display = (index === 0) ? 'block' : 'none';
+
+  const desc = document.createElement('div');
+  desc.className = 'layer-desc';
+  desc.textContent = layer.desc;
+  wrapper.appendChild(desc);
+
+  const kb = document.createElement('div');
+  kb.className = 'keyboard';
+
+  layer.rows.forEach(function(row, ri) {
+    const rowDiv = document.createElement('div');
+    rowDiv.className = 'row';
+
+    row.left.forEach(function(label, ci) {
+      const key = document.createElement('div');
+      key.className = 'key ' + layer.types[ri].left[ci];
+      key.textContent = label;
+      rowDiv.appendChild(key);
+    });
+
+    const gap = document.createElement('div');
+    gap.className = 'split-gap';
+    rowDiv.appendChild(gap);
+
+    row.right.forEach(function(label, ci) {
+      const key = document.createElement('div');
+      key.className = 'key ' + layer.types[ri].right[ci];
+      key.textContent = label;
+      rowDiv.appendChild(key);
+    });
+
+    kb.appendChild(rowDiv);
+  });
+
+  wrapper.appendChild(kb);
+  return wrapper;
+}
+
+var container = document.getElementById('layers');
+for (var i = 0; i < layers.length; i++) {
+  container.appendChild(createKeyboard(layers[i], i));
+}
+
+function showLayer(index) {
+  var tabButtons = document.getElementById('tabs').getElementsByClassName('tab');
+  for (var i = 0; i < tabButtons.length; i++) {
+    tabButtons[i].className = (i === index) ? 'tab active' : 'tab';
+  }
+  for (var i = 0; i < 4; i++) {
+    document.getElementById('layer-' + i).style.display = (i === index) ? 'block' : 'none';
+  }
+}
+</script>
+</body>
+</html>
